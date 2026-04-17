@@ -19,7 +19,7 @@ Se diseñó un archivo `Dockerfile` optimizado para el microservicio principal, 
 
 ### 📸 Evidencia de Configuración (Dockerfile)
 ![Dockerfile .NET Core](dockerfile_net_core.png)
-*Configuración de las fases base, build, publish y final para el microservicio.*
+
 
 ## 4. Ejecución de contenedores
 Para la puesta en marcha, se utilizó la orquestación mediante Docker Compose, permitiendo levantar toda la infraestructura con un solo comando.
