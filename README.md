@@ -5,55 +5,52 @@
 ---
 
 ## 1. Introducción
-Docker es una plataforma de código abierto que permite a los desarrolladores empaquetar, distribuir y ejecutar aplicaciones dentro de contenedores. Un contenedor es una unidad estándar de software que empaqueta el código y todas sus dependencias para que la aplicación se ejecute de forma rápida y confiable de un entorno informático a otro. Sirve para eliminar el clásico problema de "en mi máquina sí funciona", garantizando la paridad entre desarrollo y producción.
+Docker es una plataforma de software que permite la creación, el despliegue y la gestión de aplicaciones mediante contenedores. Estos contenedores empaquetan el código, las librerías y las dependencias necesarias, garantizando que la aplicación se ejecute de manera consistente en cualquier entorno. En esta práctica, se ha dockerizado una arquitectura de microservicios para optimizar su distribución y escalabilidad.
 
 ## 2. Microservicios dockerizados
-En este proyecto se han implementado y configurado los siguientes servicios:
-* **Microservicio de Clientes:** Desarrollado en **.NET 8**.
-* **Microservicio de Pedidos:** Desarrollado en **Python** (ubicado en la carpeta `apiPy`).
-* **Servicio de Mensajería:** Utilizando **RabbitMQ**.
-* **Base de Datos:** Utilizando **PostgreSQL** (Imagen `postgres:alpine3.14`).
+El ecosistema implementado cuenta con los siguientes servicios:
+* **API de Clientes:** Desarrollada en **.NET 10.0**.
+* **Base de Datos Relacional:** Motor **PostgreSQL** (Puerto 5434).
+* **Servidor de Mensajería:** **RabbitMQ** para la comunicación asíncrona.
+* **Base de Datos NoSQL:** **SQL Server** (contenedor adicional para persistencia).
 
 ## 3. Dockerfile por servicio
-Cada servicio cuenta con su propio archivo `Dockerfile` para definir su entorno:
+Se diseñó un archivo `Dockerfile` optimizado para el microservicio principal, utilizando un esquema de construcción multi-etapa para reducir el peso de la imagen final.
 
-* **Dockerfile (.NET):** Utiliza un sistema de compilación multi-etapa (Multi-stage build) con el SDK 10.0 para compilar y el ASP.NET 10.0 para ejecutar, optimizando el tamaño de la imagen final.
-* **Dockerfile (Python):** Configura un entorno ligero basado en `python:3.11-slim`, instala las dependencias desde `requirements.txt` y expone el servicio.
-
----
-### 📸 Evidencia de Configuración
-> **Imagen a colocar aquí:** `dockerfile_net_core.png` (La captura de tu código en Visual Studio).
----
+### 📸 Evidencia de Configuración (Dockerfile)
+![Dockerfile .NET Core](dockerfile_net_core.png)
+*Configuración de las fases base, build, publish y final para el microservicio.*
 
 ## 4. Ejecución de contenedores
-Para poner en marcha el ecosistema de microservicios, se utilizaron los siguientes comandos en la terminal:
+Para la puesta en marcha, se utilizó la orquestación mediante Docker Compose, permitiendo levantar toda la infraestructura con un solo comando.
 
-1.  **Construcción de imagen individual:** `docker build -t api-cliente .`
-2.  **Levantamiento orquestado:** `docker-compose up -d`
-3.  **Verificación de logs:** `docker logs api-cliente-contenedor`
+### 🚀 Comandos utilizados:
+* `docker build -t api-cliente .` (Construcción de la imagen).
+* `docker-compose up -d` (Levantamiento orquestado de servicios).
+* `docker ps` (Verificación de estado).
 
-## 5. Configuración
-Se establecieron las siguientes conexiones y puertos:
-* **API .NET:** Puerto `8080`.
-* **PostgreSQL:** Puerto local `5434` mapeado al `5432` del contenedor.
-* **RabbitMQ:** Puertos `5672` (datos) y `15672` (panel de administración).
-* **Red:** Los contenedores se comunican entre sí mediante la red interna de Docker.
+## 5. Evidencias de Funcionamiento
 
-## 6. Evidencias de Funcionamiento
+### A. Proceso de Build de Imágenes
+Evidencia del despliegue y construcción de las capas de la imagen de .NET.
+![Proceso de Build](build_proceso_net.png)
 
-### A. Proceso de Build Orquestado
-Esta captura muestra la creación de las capas de imagen mediante Docker Compose.
-> **Imagen a colocar aquí:** `build_orquestado_compose.png`
+### B. Orquestación con Docker Compose
+Captura del proceso automático de levantamiento de los múltiples servicios del proyecto.
+![Build Orquestado](build_orquestado_compose.png)
 
-### B. Contenedores en Ejecución (docker ps)
-Validación de que todos los servicios (API, DB, RabbitMQ) están en estado "Up".
-> **Imagen a colocar aquí:** `servicios_activos_final.png` o `image_636f45.png`
+### C. Servicios Activos (docker ps)
+Validación final donde se observa el microservicio, PostgreSQL y RabbitMQ en ejecución simultánea.
+![Servicios Finales](servicios_activos_final.png)
 
-### C. Logs de la Aplicación
-Prueba de que la API interna ha iniciado correctamente y está escuchando peticiones.
-> **Imagen a colocar aquí:** `logs_ejecucion_docker.png` o `image_6372c9.png`
+### D. Pruebas de Funcionamiento Local
+Comparativa de la ejecución del microservicio directamente en el entorno de desarrollo.
+![Ejecución Local](ejecucion_local_dotnet.png)
 
----
+## 6. Configuración de Red y Puertos
+* **API .NET:** Puerto interno 8080 / 8081.
+* **PostgreSQL:** Puerto 5434 (Host) -> 5432 (Contenedor).
+* **RabbitMQ:** Gestión en el puerto 15672.
 
 ## 7. Conclusión
-La implementación de este proyecto permitió comprender la importancia de la arquitectura de microservicios y su despliegue mediante contenedores. Se logró estandarizar el entorno de ejecución, simplificar la gestión de bases de datos y servicios de mensajería, y automatizar el despliegue con Docker Compose, lo cual es fundamental para el desarrollo de aplicaciones distribuidas modernas y escalables.
+La implementación exitosa de este proyecto demuestra las ventajas competitivas de Docker en el desarrollo moderno. Se logró centralizar la infraestructura, facilitar la comunicación entre servicios heterogéneos y asegurar un despliegue limpio y reproducible, habilidades críticas para la arquitectura de aplicaciones distribuidas.
